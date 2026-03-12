@@ -1,0 +1,26 @@
+@model WebOrderApp.Models.Product
+
+<!-- Titre de la page -->
+<h2>Supprimer le produit</h2>
+
+<!-- Petit message pour confirmer si on veut vraiment supprimer -->
+<p>Êtes-vous sûr de vouloir supprimer ce produit ?</p>
+
+<!-- Affichage des infos du produit (nom, description, prix) -->
+<div>
+    <h4>@Model.Name</h4> <!-- Le nom du produit en gros -->
+    <p>@Model.Description</p> <!-- Description du produit -->
+    <p>@Model.Price.ToString("C")</p> <!-- Prix du produit formaté en argent (C = currency) -->
+</div>
+
+<!-- Formulaire qui envoie la requête POST pour supprimer -->
+<form asp-action="Delete">
+    <!-- Champ caché pour passer l'ID du produit qu'on supprime -->
+    <input type="hidden" asp-for="Id" />
+
+    <!-- Bouton rouge pour confirmer la suppression -->
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+
+    <!-- Bouton gris pour annuler et revenir à la liste -->
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

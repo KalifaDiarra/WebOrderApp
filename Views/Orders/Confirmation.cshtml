@@ -1,0 +1,46 @@
+@model WebOrderApp.Models.OrderViewModel
+
+@{
+    // Titre de la page affiché dans l’onglet du navigateur
+    ViewData["Title"] = "Confirmation de commande";
+}
+
+<div class="container text-center">
+    <!-- Titre principal -->
+    <h2 class="mt-5">Commande confirmée !</h2>
+    <p class="lead">Merci pour votre achat ! Voici les détails de votre commande :</p>
+
+    <!-- Carte contenant les infos de la commande -->
+    <div class="card order-summary">
+        <div class="card-body">
+            <h4 class="card-title">Détails de la commande</h4>
+
+            <!-- Affichage des infos liées à la commande -->
+            <p><strong>Numéro de commande :</strong> @Model.Id</p>
+            <p><strong>Produit :</strong> @Model.ProductName</p>
+            <p><strong>Quantité :</strong> @Model.Quantity</p>
+            <p><strong>Prix total :</strong> $@Model.TotalPrice</p>
+            <p><strong>Date :</strong> @Model.OrderDate.ToString("dd MMMM yyyy HH:mm")</p>
+        </div>
+    </div>
+
+    <!-- Bouton de retour à l’accueil -->
+    <a class="btn btn-primary mt-4" asp-controller="Home" asp-action="Index">Retour à l'accueil</a>
+</div>
+
+<!-- Style local à la vue pour embellir l'affichage -->
+<style>
+    .order-summary {
+        background-color: #222;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 30px auto;
+        width: 50%;
+        box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary {
+        font-weight: bold;
+    }
+</style>

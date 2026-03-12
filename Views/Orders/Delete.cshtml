@@ -1,0 +1,47 @@
+@model WebOrderApp.Models.Order
+
+@{
+    // Titre affiché dans l'onglet du navigateur
+    ViewData["Title"] = "Supprimer une commande";
+}
+
+<div class="container mt-5">
+
+    <!-- Boîte d’alerte pour confirmation de suppression -->
+    <div class="alert alert-warning shadow p-4 rounded">
+
+        <!-- Titre avec icône d’avertissement -->
+        <h2 class="text-danger mb-3">
+            <i class="fas fa-exclamation-triangle"></i> Confirmation de suppression
+        </h2>
+
+        <!-- Petit message à l'utilisateur pour s'assurer qu'il veut supprimer -->
+        <p class="fs-5">
+            Es-tu sûr de vouloir supprimer cette commande ?
+        </p>
+
+        <!-- Infos de la commande qu’on va supprimer (pour confirmation visuelle) -->
+        <ul>
+            <li><strong>Commande #:</strong> @Model.Id</li>
+            <li><strong>Quantité:</strong> @Model.Quantity</li>
+            <li><strong>Date:</strong> @Model.OrderDate.ToShortDateString()</li>
+        </ul>
+
+        <!-- Formulaire de confirmation (POST vers /Orders/Delete) -->
+        <form asp-action="Delete" method="post">
+            <!-- On passe l’ID de la commande en champ caché -->
+            <input type="hidden" asp-for="Id" />
+
+            <!-- Bouton de suppression -->
+            <button type="submit" class="btn btn-danger me-2">
+                <i class="fas fa-trash-alt"></i> Oui, Supprimer
+            </button>
+
+            <!-- Bouton d’annulation qui redirige vers la liste des commandes -->
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Annuler
+            </a>
+        </form>
+    </div>
+</div>
+

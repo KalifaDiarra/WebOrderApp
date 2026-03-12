@@ -1,0 +1,148 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    // On récupère le prénom de l'utilisateur connecté (s'il y en a un)
+    var userName = HttpContextAccessor.HttpContext?.Session.GetString("UserName");
+
+    // On vérifie si l'utilisateur est admin (IsAdmin = 1 dans la session)
+    var isAdmin = HttpContextAccessor.HttpContext?.Session.GetInt32("IsAdmin") == 1;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- Config de base de la page -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GameStore</title>
+
+    <!-- Liens vers les fichiers CSS du projet -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+
+    <!-- Google Fonts pour le style rétro -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <!-- Icônes Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header>
+    <!-- Navbar principale (barre de navigation du haut) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg">
+        <div class="container">
+            <!-- Nom du site qui ramène à l'accueil -->
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">🎮 GameStore</a>
+
+            <!-- Bouton hamburger en mode mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menu déroulant -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+
+                    <!-- Lien vers l'accueil -->
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home"></i> Accueil
+                        </a>
+                    </li>
+
+                    <!-- Lien vers les jeux -->
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-controller="Products" asp-action="Index">
+                            <i class="fas fa-gamepad"></i> Jeux
+                        </a>
+                    </li>
+
+                    @* Si l'utilisateur est admin, on lui affiche les liens spéciaux *@
+                    @if (isAdmin)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="Users" asp-action="Index">
+                                <i class="fas fa-users"></i> Utilisateurs
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="Users" asp-action="ResetAccounts">
+                                <i class="fas fa-unlock"></i> Comptes bloqués
+                            </a>
+                        </li>
+                    }
+
+                    <!-- Commander un jeu -->
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-controller="Orders" asp-action="Create">
+                            <i class="fas fa-shopping-cart"></i> Commander
+                        </a>
+                    </li>
+
+                    <!-- Si un utilisateur est connecté -->
+                    @if (!string.IsNullOrEmpty(userName))
+                    {
+                        <!-- Voir ses commandes -->
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="Orders" asp-action="Index">
+                                <i class="fas fa-list"></i> Mes commandes
+                            </a>
+                        </li>
+
+                        <!-- Affichage du prénom dans la navbar -->
+                        <li class="nav-item">
+                            <span class="nav-link text-success">👤 @userName</span>
+                        </li>
+
+                        <!-- Bouton de déconnexion -->
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="Account" asp-action="Logout">
+                                <i class="fas fa-sign-out-alt"></i> Se déconnecter
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <!-- Boutons pour se connecter ou créer un compte -->
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="Account" asp-action="Login">
+                                <i class="fas fa-sign-in-alt"></i> Se connecter
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-controller="Account" asp-action="Register">
+                                <i class="fas fa-user-plus"></i> Créer un compte
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Contenu principal de la page -->
+<div class="container mt-4">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
+
+<!-- Pied de page -->
+<footer class="text-center text-light bg-dark py-3">
+    <div class="container">
+        <p>&copy; 2025 - GameStore 🎮 - Tous droits réservés.</p>
+    </div>
+</footer>
+
+<!-- Scripts nécessaires pour Bootstrap -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

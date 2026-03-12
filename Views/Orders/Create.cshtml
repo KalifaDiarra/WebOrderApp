@@ -1,0 +1,31 @@
+@model WebOrderApp.Models.Order
+
+@{
+    // Titre affiché dans le navigateur
+    ViewData["Title"] = "Créer une commande";
+}
+
+<div class="container">
+    <h2>Créer une commande</h2>
+
+    <!-- Formulaire de création de commande -->
+    <form method="post">
+
+        <!-- Dropdown pour sélectionner le produit -->
+        <div class="form-group">
+            <label for="ProductId">Sélectionnez un produit</label>
+            <select asp-for="ProductId" class="form-control" asp-items="ViewBag.Products" required>
+                <option value="">Sélectionnez un produit</option> <!-- Option vide pour forcer le choix -->
+            </select>
+        </div>
+
+        <!-- Input pour saisir la quantité -->
+        <div class="form-group">
+            <label for="Quantity">Quantité</label>
+            <input asp-for="Quantity" class="form-control" type="number" min="1" required />
+        </div>
+
+        <!-- Bouton pour soumettre le formulaire -->
+        <button type="submit" class="btn btn-primary">Valider</button>
+    </form>
+</div>

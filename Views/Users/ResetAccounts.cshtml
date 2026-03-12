@@ -1,0 +1,48 @@
+@model IEnumerable<WebOrderApp.Models.User> // On reçoit une liste d'utilisateurs bloqués à afficher
+@{
+    ViewData["Title"] = "Comptes bloqués"; // Titre affiché dans le navigateur
+}
+
+<h2>Comptes bloqués</h2>
+
+<!-- Si un message est stocké temporairement (ex: succès après déblocage), on l'affiche ici -->
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+<!-- Si la liste des utilisateurs bloqués est vide -->
+@if (!Model.Any())
+{
+    <p>Aucun utilisateur bloqué.</p> <!-- Message simple si tout va bien -->
+}
+else
+{
+    <!-- Tableau pour afficher les utilisateurs bloqués -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nom</th> <!-- Colonne prénom + nom -->
+                <th>Email</th> <!-- Colonne email -->
+                <th>Actions</th> <!-- Colonne bouton pour débloquer -->
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model) // Pour chaque utilisateur bloqué
+        {
+            <tr>
+                <td>@user.FirstName @user.LastName</td> <!-- Affiche le nom complet -->
+                <td>@user.Email</td> <!-- Affiche l'email -->
+                <td>
+                    <!-- Formulaire POST pour débloquer l'utilisateur -->
+                    <form asp-action="UnblockUser" method="post">
+                        <input type="hidden" name="id" value="@user.Id" /> <!-- ID caché envoyé avec le POST -->
+                        <button class="btn btn-success btn-sm">Débloquer</button> <!-- Bouton de déblocage -->
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+

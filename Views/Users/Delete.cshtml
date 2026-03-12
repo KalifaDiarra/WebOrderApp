@@ -1,0 +1,36 @@
+@model WebOrderApp.Models.User
+
+@{
+    // Titre de la page affiché dans l'onglet du navigateur
+    ViewData["Title"] = "Supprimer un utilisateur";
+}
+
+<div class="container mt-4">
+    <!-- Alerte visuelle pour prévenir qu'on est sur une action dangereuse (suppression) -->
+    <div class="alert alert-warning shadow p-4 rounded">
+        <h2 class="text-danger mb-3">
+            <i class="fas fa-exclamation-triangle"></i> Confirmation de suppression
+        </h2>
+
+        <!-- Message personnalisé avec le prénom + nom de l'utilisateur -->
+        <p class="fs-5">
+            Es-tu sûr de vouloir supprimer <strong>@Model.FirstName @Model.LastName</strong> ?
+        </p>
+
+        <!-- Formulaire de confirmation avec méthode POST -->
+        <form asp-action="DeleteConfirmed" method="post">
+            <!-- On cache l'ID pour savoir quel utilisateur supprimer -->
+            <input type="hidden" asp-for="Id" />
+
+            <!-- Bouton pour confirmer la suppression -->
+            <button type="submit" class="btn btn-danger me-2">
+                <i class="fas fa-trash-alt"></i> Oui, Supprimer
+            </button>
+
+            <!-- Bouton pour revenir à la liste sans rien faire -->
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Annuler
+            </a>
+        </form>
+    </div>
+</div>

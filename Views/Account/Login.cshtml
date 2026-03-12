@@ -1,0 +1,51 @@
+@model WebOrderApp.Models.LoginViewModel
+@{
+    Layout = "_Layout"; // On utilise le layout principal
+    ViewData["Title"] = "Connexion"; // Titre de la page
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Connexion</h2>
+
+    <!-- Affiche un message de succès si présent (genre après une inscription) -->
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success text-center">@TempData["Message"]</div>
+    }
+
+    <!-- Affiche une erreur (par ex. si le compte est bloqué ou mauvais mot de passe) -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">@TempData["Error"]</div>
+    }
+
+    <!-- Formulaire de connexion -->
+    <form asp-action="Login" method="post" class="border p-4 rounded shadow bg-light">
+        <!-- Montre les erreurs de validation s’il y en a -->
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- Champ email -->
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <!-- Champ mot de passe -->
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Mot de passe</label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <!-- Bouton de connexion -->
+        <button type="submit" class="btn btn-primary w-100">
+            <i class="fas fa-sign-in-alt"></i> Se connecter
+        </button>
+    </form>
+</div>
+
+<!-- Charge les scripts de validation côté client (JS) -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

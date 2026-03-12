@@ -1,0 +1,122 @@
+@model WebOrderApp.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Inscription"; // C'est juste le titre de la page
+}
+
+<div class="container mt-5 text-light">
+    <h2>Créer un compte</h2>
+
+    <!-- Formulaire d'inscription qui envoie les données au serveur (POST) -->
+    <form method="post" asp-action="Register" id="registerForm">
+        
+        <!-- Affiche les erreurs globales du formulaire si y'en a -->
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+        <!-- Champ pour le prénom -->
+        <div class="form-group">
+            <label asp-for="FirstName">Prénom</label>
+            <input asp-for="FirstName" class="form-control" required />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <!-- Champ pour le nom de famille -->
+        <div class="form-group">
+            <label asp-for="LastName">Nom</label>
+            <input asp-for="LastName" class="form-control" required />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <!-- Champ pour l'email -->
+        <div class="form-group">
+            <label asp-for="Email">Email</label>
+            <input asp-for="Email" type="email" class="form-control" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <!-- Champ pour le mot de passe -->
+        <div class="form-group">
+            <label asp-for="Password">Mot de passe</label>
+            <input asp-for="Password" type="password" class="form-control" id="passwordInput" required />
+            <small class="form-text text-muted">
+                Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole.
+            </small>
+
+            <!-- Barre de progression qui montre la force du mot de passe -->
+            <div class="progress mt-2">
+                <div id="passwordStrengthBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+            </div>
+
+            <!-- Si le mot de passe est trop faible -->
+            <span asp-validation-for="Password" class="text-danger"></span>
+            <div id="passwordError" class="alert alert-danger mt-2 d-none"></div>
+        </div>
+
+        <!-- Champ pour confirmer le mot de passe (doit être pareil que le premier) -->
+        <div class="form-group">
+            <label asp-for="ConfirmPassword">Confirmer le mot de passe</label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" required />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <!-- Bouton pour envoyer le formulaire -->
+        <button type="submit" class="btn btn-success mt-3">S'inscrire</button>
+    </form>
+</div>
+
+@section Scripts {
+    <!-- Active la validation côté client (grâce à ASP.NET) -->
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- Script JavaScript pour la force du mot de passe et sa validation -->
+    <script>
+        const form = document.getElementById("registerForm");
+        const passwordInput = document.getElementById("passwordInput");
+        const passwordError = document.getElementById("passwordError");
+        const strengthBar = document.getElementById("passwordStrengthBar");
+
+        // Fonction pour évaluer la complexité du mot de passe
+        function evaluatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++; // Longueur
+            if (/[a-z]/.test(password)) strength++; // Minuscule
+            if (/[A-Z]/.test(password)) strength++; // Majuscule
+            if (/\d/.test(password)) strength++; // Chiffre
+            if (/[\W_]/.test(password)) strength++; // Symbole
+            return strength;
+        }
+
+        // Met à jour la barre de progression à chaque fois qu'on tape dans le champ mot de passe
+        passwordInput.addEventListener("input", () => {
+            const password = passwordInput.value;
+            const strength = evaluatePasswordStrength(password);
+            const percent = (strength / 5) * 100;
+            strengthBar.style.width = percent + "%";
+
+            // Change la couleur de la barre selon la force
+            if (strength <= 2) {
+                strengthBar.className = "progress-bar bg-danger";
+            } else if (strength <= 4) {
+                strengthBar.className = "progress-bar bg-warning";
+            } else {
+                strengthBar.className = "progress-bar bg-success";
+            }
+        });
+
+        // Vérifie si le mot de passe respecte bien les règles avant d'envoyer le formulaire
+        form.addEventListener("submit", function (e) {
+            const password = passwordInput.value;
+
+            // Regex qui vérifie majuscule, minuscule, chiffre, symbole, et longueur
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+            if (!regex.test(password)) {
+                e.preventDefault(); // On empêche l'envoi du formulaire
+                passwordError.textContent = "Le mot de passe est trop faible. Il doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole.";
+                passwordError.classList.remove("d-none"); // Affiche le message d'erreur
+            } else {
+                passwordError.classList.add("d-none"); // Cache le message si tout est bon
+            }
+        });
+    </script>
+}

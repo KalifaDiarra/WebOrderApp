@@ -1,0 +1,72 @@
+@model IEnumerable<WebOrderApp.Models.User> // On utilise une liste d’utilisateurs comme modèle
+@inject IHttpContextAccessor HttpContextAccessor // Pour accéder aux infos de session (comme IsAdmin)
+
+@{
+    ViewData["Title"] = "Utilisateurs"; // Titre de la page affiché dans l'onglet
+    var isAdmin = HttpContextAccessor.HttpContext?.Session.GetInt32("IsAdmin") == 1; // Vérifie si l'utilisateur est un admin
+    var message = TempData["Message"] as string; // Récupère un message temporaire (ex: succès après une action)
+}
+
+<h2>Utilisateurs</h2>
+
+@if (!string.IsNullOrEmpty(message)) // Si un message est présent, on l’affiche
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @message
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+}
+
+@if (!isAdmin)  // Seuls les non-admins peuvent voir le bouton pour ajouter un nouvel utilisateur
+{
+    <a asp-action="Create" class="btn btn-primary mb-3">Ajouter un nouvel utilisateur</a>
+}
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Adresse</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model) // Boucle sur tous les utilisateurs à afficher
+    {
+        <tr>
+            <td>@user.FirstName @user.LastName</td> <!-- Affiche le prénom et nom -->
+            <td>@user.Email</td> <!-- Email -->
+            <td>@user.Phone</td> <!-- Téléphone -->
+            <td>@user.Address</td> <!-- Adresse -->
+            <td>
+                @if (user.IsAdmin) // Affiche un badge vert si l’utilisateur est admin
+                {
+                    <span class="badge bg-success">Admin</span>
+                }
+                else // Sinon, badge gris pour utilisateur standard
+                {
+                    <span class="badge bg-secondary">Utilisateur</span>
+                }
+            </td>
+            <td>
+                <!-- Lien pour modifier -->
+                <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-warning btn-sm">Modifier</a>
+                <!-- Lien pour supprimer -->
+                <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger btn-sm">Supprimer</a>
+
+                @if (!user.IsAdmin && isAdmin) // Si je suis admin et que l’autre user n’est pas admin
+                {
+                    <!-- Formulaire pour promouvoir ce user au rôle admin -->
+                    <form asp-action="PromoteToAdmin" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-success btn-sm">Promouvoir</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

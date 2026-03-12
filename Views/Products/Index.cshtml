@@ -1,0 +1,40 @@
+@model IEnumerable<WebOrderApp.Models.Product>  // On reçoit une liste de produits à afficher
+@using System.Globalization // Permet d’afficher le prix avec le bon format (USD ici)
+
+<!-- Titre principal -->
+<h2>Produits</h2>
+
+<!-- Bouton pour rediriger vers la page de création d’un produit -->
+<a asp-action="Create" class="btn btn-primary">Créer un nouveau produit</a>
+
+<!-- Table des produits -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom</th> <!-- Colonne pour le nom du produit -->
+            <th>Description</th> <!-- Colonne pour la description -->
+            <th>Prix</th> <!-- Colonne pour le prix -->
+            <th>Actions</th> <!-- Colonne pour les boutons Modifier/Supprimer -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model) // On boucle sur chaque produit
+        {
+            <tr>
+                <td>@product.Name</td> <!-- Affiche le nom -->
+                <td>@product.Description</td> <!-- Affiche la description -->
+                <td>
+                    <!-- Affiche le prix en format $USD (ex : $9.99) -->
+                    @product.Price.ToString("C", CultureInfo.GetCultureInfo("en-US"))
+                </td>
+                <td>
+                    <!-- Bouton jaune pour modifier ce produit -->
+                    <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning">Modifier</a>
+                    
+                    <!-- Bouton rouge pour supprimer ce produit -->
+                    <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger">Supprimer</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

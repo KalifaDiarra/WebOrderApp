@@ -1,0 +1,80 @@
+@model WebOrderApp.Models.User
+
+@{
+    // Titre affiché dans l'onglet du navigateur
+    ViewData["Title"] = "Modifier l'utilisateur";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary">Modifier l'utilisateur</h2>
+
+    @* Affiche un message temporaire de succès s’il existe (après une modification par exemple) *@
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success text-center">@TempData["Message"]</div>
+    }
+
+    <!-- Formulaire de modification de l'utilisateur -->
+    <!-- Le asp-route-id permet de passer l'ID à l'action Edit dans le contrôleur -->
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="border p-4 rounded shadow bg-light">
+        @Html.AntiForgeryToken() <!-- Sécurité pour éviter les attaques CSRF -->
+        <input type="hidden" asp-for="Id" /> <!-- On garde l'ID sans que l'utilisateur puisse le modifier -->
+
+        <!-- Champ prénom -->
+        <div class="mb-3">
+            <label asp-for="FirstName" class="form-label">Prénom :</label>
+            <input asp-for="FirstName" class="form-control" required />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+
+        <!-- Champ nom -->
+        <div class="mb-3">
+            <label asp-for="LastName" class="form-label">Nom :</label>
+            <input asp-for="LastName" class="form-control" required />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+
+        <!-- Champ email -->
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email :</label>
+            <input asp-for="Email" class="form-control" type="email" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <!-- Champ date de naissance -->
+        <div class="mb-3">
+            <label asp-for="BirthDate" class="form-label">Date de naissance :</label>
+            <input asp-for="BirthDate" class="form-control" type="date" required />
+            <span asp-validation-for="BirthDate" class="text-danger"></span>
+        </div>
+
+        <!-- Champ téléphone -->
+        <div class="mb-3">
+            <label asp-for="Phone" class="form-label">Téléphone :</label>
+            <input asp-for="Phone" class="form-control" required />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <!-- Champ adresse -->
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label">Adresse :</label>
+            <input asp-for="Address" class="form-control" required />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <!-- Bouton pour enregistrer les changements -->
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Enregistrer les modifications
+        </button>
+
+        <!-- Lien pour revenir à la liste des utilisateurs -->
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="fas fa-arrow-left"></i> Retour
+        </a>
+    </form>
+</div>
+
+@section Scripts {
+    <!-- Active la validation côté client -->
+    <partial name="_ValidationScriptsPartial" />
+}
